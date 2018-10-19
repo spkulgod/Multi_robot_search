@@ -17,8 +17,7 @@ r_sen = r_sen/X1;
 Z = ones(1000,1000);%Uncertainity Distribution
 val2 = Z;
 k=1;
-Kprop = 0.5; %Proportionality constant
-
+Kpro = 0.5; %Proportio
 %%%%%%%%%%%%%%%%%%%%%%%% VISUALIZATION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if showPlot
     verCellHandle = zeros(n,1);
@@ -75,8 +74,8 @@ while max(max(Z))>0.1
             cx = min(xrange,max(0, cx));
             cy = min(yrange,max(0, cy));
             if ~isnan(cx) && inpolygon(cx,cy,crs(:,1),crs(:,2))
-                Px(i) = Px(i) + Kprop*(cx - Px(i));  %don't update if goal is outside the polygon
-                Py(i) = Py(i) + Kprop*(cy - Py(i));
+                Px(i) = cx  %don't update if goal is outside the polygon
+                Py(i) = cy;
             end
         end
         
