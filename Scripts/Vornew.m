@@ -9,6 +9,7 @@ Py = 0.5*rand([n,1]);
 
 xrange = max(crs(:,1));
 yrange = max(crs(:,2));
+thresh = 0.01;
 
 %Dividing the area into discrete cells and expressing range in terms of the
 %map
@@ -43,11 +44,13 @@ surf (Z);
 set(surf(Z),'LineStyle','none');
 %%%%%%%%%%%%%%%%%%%%%%%% END VISUALIZATION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+dist = xrange*ones(n,1);
 %Starting the loop for search
 while max(max(Z))>0.1
     figure(1)
-    for counter = 1:numIterations
-        
+    counter = 0;
+    while max(dist)>thresh 
+        counter = counter+1;
         %[v,c]=VoronoiLimit(Px,Py, crs, false);
         [v,c]=VoronoiBounded(Px,Py, crs);
         
@@ -77,6 +80,7 @@ while max(max(Z))>0.1
             if ~isnan(cx) && inpolygon(cx,cy,crs(:,1),crs(:,2))
                 Px(i) = Px(i) + Kprop*(cx - Px(i));  %don't update if goal is outside the polygon
                 Py(i) = Py(i) + Kprop*(cy - Py(i));
+                dist(i) = sqrt((cx - Px(i))^2 + (cy - Py(i))^2);
             end
         end
         
