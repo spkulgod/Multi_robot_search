@@ -9,7 +9,7 @@ Py = 0.5*rand([n,1]);
 
 xrange = max(crs(:,1));
 yrange = max(crs(:,2));
-thresh = 0.01;
+thresh = 0.01; %max distance threshold for each cycle to end
 
 %Dividing the area into discrete cells and expressing range in terms of the
 %map
@@ -17,7 +17,7 @@ X1 = max(max(crs))/1000;
 r_sen = r_sen/X1;
 Z = ones(1000,1000);%Uncertainity Distribution
 val2 = Z;
-k=1;
+cycle=1;
 Kprop = 0.5; %Proportionality constant
 
 %%%%%%%%%%%%%%%%%%%%%%%% VISUALIZATION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -49,9 +49,9 @@ dist = xrange*ones(n,1);
 while max(max(Z))>0.1
     figure(1)
     counter = 0;
-    while max(dist)>thresh 
+    while max(dist)>thresh
+        tic;
         counter = counter+1;
-        %[v,c]=VoronoiLimit(Px,Py, crs, false);
         [v,c]=VoronoiBounded(Px,Py, crs);
         
         if showPlot
@@ -89,12 +89,13 @@ while max(max(Z))>0.1
                 set(verCellHandle(i), 'XData',v(c{i},1),'YData',v(c{i},2));
             end
             
-            set(titleHandle,'string',['o = Robots, + = Goals, Cycle', num2str(k,'%3d'), ', Iteration', num2str(counter,'%3d')]);
+            set(titleHandle,'string',['o = Robots, + = Goals, Cycle', num2str(cycle,'%3d'), ', Iteration', num2str(counter,'%3d')]);
             set(goalHandle,'XData',Px,'YData',Py);%plot goal position
             axis equal
             axis([0,xrange,0,yrange]);
             drawnow
         end
+        time(counter,cycle) = toc;
     end
     val = Z;
     for i = 1:n
@@ -118,9 +119,9 @@ while max(max(Z))>0.1
             val2(j,m) = 2*Z(j,m)*0.074;
         end
     end
-    max_d(k)= max(max(Z));
-    average(k) = mean2(Z);
-    k=k+1;
+    max_d(cycle)= max(max(Z));
+    average(cycle) = mean2(Z);
+    cycle=cycle+1;
     figure(2);
     surf (Z);
     set(surf(Z),'LineStyle','none');
